@@ -1,0 +1,26 @@
+body {
+    margin: 10px;
+}
+
+#letterContainer {
+    display: flex;
+}
+
+#ciphertextForm,
+#ciphertextForm>label {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.letterbox {
+    border: 1px solid black;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.letterbox>div {
+    font-size: xx-large;
+}

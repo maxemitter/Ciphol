@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Substituition Cipher Solver</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+    <label>
+        Identified substituitions
+        <div id="letterContainer"></div>
+    </label>
+
+    <form id="ciphertextForm">
+        <label>
+            Ciphertext
+            <textarea name="txtCiphertext"></textarea>
+        </label>
+        <button type="submit">Process</button>
+    </form>
+
+    <label>
+        Words
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Cipher</th>
+                    <th>Clear</th>
+                </tr>
+            </thead>
+            <tbody id="wordTableBody"></tbody>
+        </table>
+    </label>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
