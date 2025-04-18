@@ -1,17 +1,43 @@
 body {
     margin: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: auto;
+    width: 80%;
+}
+
+body>* {
+    margin-top: 30px;
 }
 
 #letterContainer {
     display: flex;
+    width: 100%;
 }
 
 #ciphertextForm,
 #ciphertextForm>label {
     display: flex;
     flex-direction: column;
+    width: 100%;
 }
 
+#txtCiphertext {
+    min-height: 100px;
+    padding: 10px;
+    resize: vertical;
+}
+
+#btnProcess {
+    margin-top: 5px;
+    padding: 5px;
+}
+
+label {
+    width: 100%;
+    text-align: center;
+}
 
 .letterbox {
     border: 1px solid black;
@@ -23,4 +49,16 @@ body {
 
 .letterbox>div {
     font-size: xx-large;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th,
+td {
+    border: 1px solid black;
+    padding: 5px 10px;
+    text-align: center;
 }

@@ -2,36 +2,66 @@
 <html>
 
 <head>
-    <title>Substituition Cipher Solver</title>
+    <title>Substitution Cipher Solver</title>
     <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
 
+    <h1>Substitution Cipher Solver</h1>
+
     <label>
-        Identified substituitions
+        <h2>Identified substitutions</h2>
         <div id="letterContainer"></div>
     </label>
 
     <form id="ciphertextForm">
         <label>
-            Ciphertext
-            <textarea name="txtCiphertext"></textarea>
+            <h2>Ciphertext</h2>
+            <textarea name="txtCiphertext" id="txtCiphertext"></textarea>
         </label>
-        <button type="submit">Process</button>
+        <button type="submit" id="btnProcess">Process</button>
     </form>
 
     <label>
-        Words
+        <h2>Words</h2>
         <table>
             <thead>
                 <tr>
-                    <th></th>
+                    <th>Remove</th>
                     <th>Cipher</th>
                     <th>Clear</th>
                 </tr>
             </thead>
-            <tbody id="wordTableBody"></tbody>
+            <tbody id="wordTableBody">
+                <tr>
+                    <td colspan="3">No data</td>
+                </tr>
+            </tbody>
+        </table>
+    </label>
+
+    <label>
+        <h2>Frequency analysis</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th colspan="2">Cipher</th>
+                    <th colspan="2">Suggested clear</th>
+                    <th rowspan="2">Accept suggestion?</th>
+                </tr>
+                <tr>
+                    <th>Character</th>
+                    <th>Frequency</th>
+                    <th>Character</th>
+                    <th>Frequency</th>
+                </tr>
+            </thead>
+            <tbody id="frequencyAnalysisTableBody">
+                <tr>
+                    <td colspan="5">No data</td>
+                </tr>
+            </tbody>
         </table>
     </label>
 
