@@ -39,7 +39,13 @@ function updateWordTable() {
     words.forEach(word => {
         const row = document.createElement("tr");
         const removeCell = document.createElement("td");
-        removeCell.textContent = "X";
+        const removeButton = document.createElement("button");
+        removeButton.onclick = () => {
+            words.delete(word);
+            update();
+        };
+        removeButton.textContent = "X";
+        removeCell.appendChild(removeButton);
         const cipherCell = document.createElement("td");
         cipherCell.textContent = word;
         const plainCell = document.createElement("td");
