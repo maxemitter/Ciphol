@@ -68,7 +68,29 @@ function createLetterBox(letter, identified) {
     const letterBox = document.createElement("label");
     letterBox.className = "letterbox";
     const content = document.createElement("div");
-    content.textContent = identified;
+    content.className = "letterboxContent";
+    const input = document.createElement("input");
+    input.className = "letterboxInput";
+    input.setAttribute("type", "text");
+    input.onbeforeinput = (e) => {
+        e.preventDefault();
+
+        if (e.data === null) {
+            if (e.inputType === "deleteContentForward" || e.inputType === "deleteContentBackward") {
+                input.value = "?";
+            }
+            return;
+        }
+
+        const chars = e.data.trim().toUpperCase();
+        const c = chars.charAt(chars.length - 1);
+        if (c !== "?" && !letters.includes(c)) {
+            return;
+        }
+        input.value = c;
+    };
+    input.value = identified;
+    content.appendChild(input);
     letterBox.append(letter, content);
     return letterBox;
 }

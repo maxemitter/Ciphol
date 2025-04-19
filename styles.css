@@ -1,5 +1,4 @@
 body {
-    margin: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -47,8 +46,18 @@ label {
     align-items: center;
 }
 
-.letterbox>div {
+.letterboxContent {
+    width: 100%;
+    padding: 5px;
+    box-sizing: border-box;
+}
+
+.letterboxInput {
     font-size: xx-large;
+    width: 100%;
+    box-sizing: border-box;
+    caret-color: transparent;
+    text-align: center;
 }
 
 table {
