@@ -19,14 +19,18 @@ function registerCiphertextFormHandler() {
             new FormData(this)
                 .get("txtCiphertext")
                 .toUpperCase()
-                .split(" ")
-                .map((w) => w.trim())
+                .split(/\s/)
+                .map((w) => sanitizeWord(w))
                 .filter(Boolean)
         );
         words = words.union(added);
         ciphertextForm.reset();
         update();
     });
+}
+
+function sanitizeWord(word) {
+    return [...word].filter((c) => letters.includes(c)).join("");
 }
 
 function createLetterContainer() {
