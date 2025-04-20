@@ -2,8 +2,11 @@ const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // abcdefghijklmnopqrstuvwxyz
 const substitutions = Array(letters.length).fill("?");
 let words = new Set();
 
+const letterInputs = Array(letters.length);
+
 function init() {
     registerCiphertextFormHandler();
+    createLetterContainer();
     update();
 }
 
@@ -19,17 +22,57 @@ function registerCiphertextFormHandler() {
     });
 }
 
+function createLetterContainer() {
+    const letterContainer = document.getElementById("letterContainer");
+
+    for (var i = 0; i < letters.length; i++) {
+        letterContainer.appendChild(createLetterBox(i));
+    }
+}
+
+function createLetterBox(index) {
+    const letterBox = document.createElement("label");
+    letterBox.className = "letterbox";
+    const content = document.createElement("div");
+    content.className = "letterboxContent";
+    const input = document.createElement("input");
+    input.className = "letterboxInput";
+    input.setAttribute("type", "text");
+    input.onbeforeinput = (e) => {
+        e.preventDefault();
+
+        if (e.data === null) {
+            if (e.inputType === "deleteContentForward" || e.inputType === "deleteContentBackward") {
+                substitutions[index] = "?";
+                update();
+            }
+            return;
+        }
+
+        const chars = e.data.trim().toUpperCase();
+        const c = chars.charAt(chars.length - 1);
+        if (c !== "?" && !letters.includes(c)) {
+            return;
+        }
+        substitutions[index] = c;
+        update();
+    };
+    input.value = substitutions[index];
+    letterInputs[index] = input;
+    content.appendChild(input);
+    letterBox.append(letters[index], content);
+    return letterBox;
+}
+
 function update() {
     updateLetterContainer();
     updateWordTable();
 }
 
-function cipherToClear(cipher) {
-    let clear = "";
-    for (const char of cipher) {
-        clear += substitutions[letters.indexOf(char)];
+function updateLetterContainer() {
+    for (var i = 0; i < letters.length; i++) {
+        letterInputs[i].value = substitutions[i];
     }
-    return clear;
 }
 
 function updateWordTable() {
@@ -55,44 +98,12 @@ function updateWordTable() {
     });
 }
 
-function updateLetterContainer() {
-    const letterContainer = document.getElementById("letterContainer");
-    letterContainer.innerHTML = "";
-
-    for (var i = 0; i < letters.length; i++) {
-        letterContainer.appendChild(createLetterBox(letters[i], substitutions[i]));
+function cipherToClear(cipher) {
+    let clear = "";
+    for (const char of cipher) {
+        clear += substitutions[letters.indexOf(char)];
     }
-}
-
-function createLetterBox(letter, identified) {
-    const letterBox = document.createElement("label");
-    letterBox.className = "letterbox";
-    const content = document.createElement("div");
-    content.className = "letterboxContent";
-    const input = document.createElement("input");
-    input.className = "letterboxInput";
-    input.setAttribute("type", "text");
-    input.onbeforeinput = (e) => {
-        e.preventDefault();
-
-        if (e.data === null) {
-            if (e.inputType === "deleteContentForward" || e.inputType === "deleteContentBackward") {
-                input.value = "?";
-            }
-            return;
-        }
-
-        const chars = e.data.trim().toUpperCase();
-        const c = chars.charAt(chars.length - 1);
-        if (c !== "?" && !letters.includes(c)) {
-            return;
-        }
-        input.value = c;
-    };
-    input.value = identified;
-    content.appendChild(input);
-    letterBox.append(letter, content);
-    return letterBox;
+    return clear;
 }
 
 init();
