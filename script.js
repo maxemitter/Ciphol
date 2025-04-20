@@ -12,10 +12,17 @@ function init() {
 
 function registerCiphertextFormHandler() {
     const ciphertextForm = document.getElementById("ciphertextForm");
-    ciphertextForm.addEventListener('submit', function (event) {
+    ciphertextForm.addEventListener("submit", function (event) {
         event.preventDefault();
 
-        const added = new Set(new FormData(this).get("txtCiphertext").toUpperCase().split(" ").map(w => w.trim()).filter(Boolean));
+        const added = new Set(
+            new FormData(this)
+                .get("txtCiphertext")
+                .toUpperCase()
+                .split(" ")
+                .map((w) => w.trim())
+                .filter(Boolean)
+        );
         words = words.union(added);
         ciphertextForm.reset();
         update();
@@ -42,7 +49,10 @@ function createLetterBox(index) {
         e.preventDefault();
 
         if (e.data === null) {
-            if (e.inputType === "deleteContentForward" || e.inputType === "deleteContentBackward") {
+            if (
+                e.inputType === "deleteContentForward" ||
+                e.inputType === "deleteContentBackward"
+            ) {
                 substitutions[index] = "?";
                 update();
             }
@@ -77,13 +87,19 @@ function updateLetterContainer() {
 
 function updateWordTable() {
     const wordTableBody = document.getElementById("wordTableBody");
-    wordTableBody.innerHTML = "";
 
-    words.forEach(word => {
+    if (words.size === 0) {
+        wordTableBody.innerHTML = "<tr><td colspan=3>No data</td></tr>";
+        return;
+    }
+
+    wordTableBody.innerHTML = "";
+    words.forEach((word) => {
         const row = document.createElement("tr");
         const removeCell = document.createElement("td");
         const removeButton = document.createElement("button");
-        removeButton.onclick = () => {
+        removeButton.onclick = (e) => {
+            e.preventDefault();
             words.delete(word);
             update();
         };
@@ -93,7 +109,7 @@ function updateWordTable() {
         cipherCell.textContent = word;
         const plainCell = document.createElement("td");
         plainCell.textContent = cipherToClear(word);
-        row.append(removeCell, cipherCell, plainCell)
+        row.append(removeCell, cipherCell, plainCell);
         wordTableBody.appendChild(row);
     });
 }
