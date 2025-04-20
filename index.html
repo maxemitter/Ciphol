@@ -10,56 +10,48 @@
 
     <h1>Substitution Cipher Solver</h1>
 
-    <label>
-        <h2>Identified substitutions</h2>
-        <div id="letterContainer"></div>
-    </label>
+    <h2>Identified substitutions</h2>
+    <div id="letterContainer"></div>
 
+    <h2>Ciphertext</h2>
     <form id="ciphertextForm">
-        <label>
-            <h2>Ciphertext</h2>
-            <textarea name="txtCiphertext" id="txtCiphertext"></textarea>
-        </label>
+        <textarea name="txtCiphertext" id="txtCiphertext"></textarea>
         <button type="submit" id="btnProcess">Process</button>
     </form>
 
-    <label>
-        <h2>Words</h2>
-        <table class="autoTable">
-            <thead>
-                <tr>
-                    <th class="narrow">Remove</th>
-                    <th>Cipher</th>
-                    <th>Clear</th>
-                </tr>
-            </thead>
-            <tbody id="wordTableBody"></tbody>
-        </table>
-    </label>
+    <h2>Words</h2>
+    <table class="autoTable">
+        <thead>
+            <tr>
+                <th class="narrow">Remove</th>
+                <th>Cipher</th>
+                <th>Clear</th>
+            </tr>
+        </thead>
+        <tbody id="wordTableBody"></tbody>
+    </table>
 
-    <label>
-        <h2>Frequency analysis</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th colspan="2">Cipher</th>
-                    <th colspan="2">Suggested clear</th>
-                    <th rowspan="2">Accept suggestion?</th>
-                </tr>
-                <tr>
-                    <th>Character</th>
-                    <th>Frequency</th>
-                    <th>Character</th>
-                    <th>Frequency</th>
-                </tr>
-            </thead>
-            <tbody id="frequencyAnalysisTableBody">
-                <tr>
-                    <td colspan="5">No data</td>
-                </tr>
-            </tbody>
-        </table>
-    </label>
+    <h2>Frequency analysis</h2>
+    <table>
+        <thead>
+            <tr>
+                <th colspan="2">Cipher</th>
+                <th colspan="2">Suggested clear</th>
+                <th rowspan="2">Accept suggestion?</th>
+            </tr>
+            <tr>
+                <th>Character</th>
+                <th>Frequency</th>
+                <th>Character</th>
+                <th>Frequency</th>
+            </tr>
+        </thead>
+        <tbody id="frequencyAnalysisTableBody">
+            <tr>
+                <td colspan="5">No data</td>
+            </tr>
+        </tbody>
+    </table>
 
     <script src="script.js"></script>
 

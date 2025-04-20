@@ -6,8 +6,8 @@ body {
     width: 80%;
 }
 
-body>* {
-    margin-top: 30px;
+h2 {
+    margin-top: 50px;
 }
 
 #letterContainer {
@@ -15,8 +15,7 @@ body>* {
     width: 100%;
 }
 
-#ciphertextForm,
-#ciphertextForm>label {
+#ciphertextForm {
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -31,11 +30,6 @@ body>* {
 #btnProcess {
     margin-top: 5px;
     padding: 5px;
-}
-
-label {
-    width: 100%;
-    text-align: center;
 }
 
 .letterbox {
