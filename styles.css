@@ -79,3 +79,7 @@ td {
 .narrow {
     width: 1%;
 }
+
+.invalid {
+    background-color: red;
+}

@@ -48,7 +48,7 @@ function createLetterBox(index) {
     content.className = "letterboxContent";
     const input = document.createElement("input");
     input.className = "letterboxInput";
-    input.setAttribute("type", "text");
+    input.type = "text";
     input.onbeforeinput = (e) => {
         e.preventDefault();
 
@@ -86,6 +86,19 @@ function update() {
 function updateLetterContainer() {
     for (var i = 0; i < letters.length; i++) {
         letterInputs[i].value = substitutions[i];
+        letterInputs[i].classList.remove("invalid");
+    }
+
+    for (var i = 0; i < letters.length; i++) {
+        for (var j = i + 1; j < letters.length; j++) {
+            if (
+                substitutions[i] === substitutions[j] &&
+                substitutions[i] !== "?"
+            ) {
+                letterInputs[i].classList.add("invalid");
+                letterInputs[j].classList.add("invalid");
+            }
+        }
     }
 }
 
