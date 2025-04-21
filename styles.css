@@ -77,3 +77,18 @@ td {
 .invalid {
     background-color: red;
 }
+
+textarea {
+    padding: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 60px;
+}
+
+.textareaInput {
+    resize: vertical;
+}
+
+.textareaOutput {
+    resize: none;
+}

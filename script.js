@@ -5,32 +5,60 @@ let words = new Set();
 const letterInputs = Array(letters.length);
 
 function init() {
-    registerCiphertextFormHandler();
+    createCiphertextInput();
     createLetterContainer();
     update();
 }
 
-function registerCiphertextFormHandler() {
-    const ciphertextForm = document.getElementById("ciphertextForm");
-    ciphertextForm.addEventListener("submit", function (event) {
-        event.preventDefault();
-
-        const added = new Set(
-            new FormData(this)
-                .get("txtCiphertext")
-                .toUpperCase()
-                .split(/\s/)
-                .map((w) => sanitizeWord(w))
-                .filter(Boolean)
-        );
-        words = words.union(added);
-        ciphertextForm.reset();
-        update();
-    });
+function createCiphertextInput() {
+    const ciphertextContainer = document.getElementById("ciphertextTable");
+    const sampleRow = document.createElement("tr");
+    const inputCell = document.createElement("td");
+    const textareaInput = document.createElement("textarea");
+    textareaInput.className = "textareaInput";
+    textareaInput.placeholder = "Enter ciphertext sample";
+    textareaInput.onbeforeinput = (e) => {
+        if (
+            !textareaInput.value &&
+            e.data !== null &&
+            ciphertextContainer.lastChild === sampleRow
+        ) {
+            createCiphertextInput();
+        }
+    };
+    textareaInput.oninput = () => {
+        textareaOutput.innerText = cipherToClear(textareaInput.value);
+    };
+    textareaInput.onblur = () => {
+        if (
+            !textareaInput.value &&
+            ciphertextContainer.children.length > 1 &&
+            ciphertextContainer.lastChild !== sampleRow
+        ) {
+            ciphertextContainer.removeChild(sampleRow);
+        }
+    };
+    new ResizeObserver(() => {
+        textareaOutput.style.height = textareaInput.offsetHeight + "px";
+    }).observe(textareaInput);
+    inputCell.appendChild(textareaInput);
+    const outputCell = document.createElement("td");
+    const textareaOutput = document.createElement("textarea");
+    textareaOutput.className = "textareaOutput";
+    textareaOutput.disabled = true;
+    outputCell.appendChild(textareaOutput);
+    sampleRow.append(inputCell, outputCell);
+    ciphertextContainer.appendChild(sampleRow);
 }
 
-function sanitizeWord(word) {
-    return [...word].filter((c) => letters.includes(c)).join("");
+function cipherToClear(cipher) {
+    let clear = "";
+    for (const char of cipher) {
+        clear += letters.includes(char)
+            ? substitutions[letters.indexOf(char)]
+            : char;
+    }
+    return clear;
 }
 
 function createLetterContainer() {
@@ -129,14 +157,6 @@ function updateWordTable() {
         row.append(removeCell, cipherCell, plainCell);
         wordTableBody.appendChild(row);
     });
-}
-
-function cipherToClear(cipher) {
-    let clear = "";
-    for (const char of cipher) {
-        clear += substitutions[letters.indexOf(char)];
-    }
-    return clear;
 }
 
 init();
