@@ -1,6 +1,5 @@
 const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // abcdefghijklmnopqrstuvwxyz
 const substitutions = Array(letters.length).fill("?");
-let words = new Set();
 
 const letterInputs = Array(letters.length);
 
@@ -108,7 +107,6 @@ function createLetterBox(index) {
 
 function update() {
     updateLetterContainer();
-    updateWordTable();
 }
 
 function updateLetterContainer() {
@@ -128,35 +126,6 @@ function updateLetterContainer() {
             }
         }
     }
-}
-
-function updateWordTable() {
-    const wordTableBody = document.getElementById("wordTableBody");
-
-    if (words.size === 0) {
-        wordTableBody.innerHTML = "<tr><td colspan=3>No data</td></tr>";
-        return;
-    }
-
-    wordTableBody.innerHTML = "";
-    words.forEach((word) => {
-        const row = document.createElement("tr");
-        const removeCell = document.createElement("td");
-        const removeButton = document.createElement("button");
-        removeButton.onclick = (e) => {
-            e.preventDefault();
-            words.delete(word);
-            update();
-        };
-        removeButton.textContent = "X";
-        removeCell.appendChild(removeButton);
-        const cipherCell = document.createElement("td");
-        cipherCell.textContent = word;
-        const plainCell = document.createElement("td");
-        plainCell.textContent = cipherToClear(word);
-        row.append(removeCell, cipherCell, plainCell);
-        wordTableBody.appendChild(row);
-    });
 }
 
 init();
