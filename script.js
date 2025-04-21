@@ -1,4 +1,9 @@
 const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // abcdefghijklmnopqrstuvwxyz
+const frequencies = [
+    0.082, 0.015, 0.028, 0.043, 0.127, 0.022, 0.02, 0.061, 0.07, 0.0015, 0.0077,
+    0.04, 0.024, 0.067, 0.075, 0.019, 0.00095, 0.06, 0.063, 0.091, 0.028,
+    0.0098, 0.024, 0.0015, 0.02, 0.00074,
+]; // Taken from https://en.wikipedia.org/wiki/Letter_frequency
 const substitutions = Array(letters.length).fill("?");
 
 const letterInputs = Array(letters.length);
@@ -96,6 +101,7 @@ function createLetterBox(index) {
 function update() {
     updateLetterContainer();
     updateTranslations();
+    updateFrequencyAnalysis();
 }
 
 function updateLetterContainer() {
@@ -138,6 +144,59 @@ function cipherToClear(cipher) {
         }
     }
     return clear;
+}
+
+function updateFrequencyAnalysis() {
+    const freqAnalTable = document.getElementById("freqAnalTableBody");
+    const ciphertextTable = document.getElementById("ciphertextTable");
+
+    const counts = new Array(letters.length).fill(0);
+    for (const row of ciphertextTable.rows) {
+        for (const char of row.cells[0].lastChild.value) {
+            const upChar = char.toUpperCase();
+            // TODO Should be able to just update and ignore the out of bounds access? Or maybe even use it?
+            if (letters.includes(upChar)) {
+                counts[letters.indexOf(upChar)]++;
+            }
+        }
+    }
+
+    const sum = counts.reduce((prev, cur) => prev + cur); // .reduce() ignores the value for -1
+    if (sum === 0) {
+        freqAnalTable.innerHTML = "<tr><td colspan=5>No data</td></tr>";
+        return;
+    }
+
+    const charCounts = counts
+        .filter((c) => c !== 0)
+        .map((c, i) => [letters[i], c])
+        .sort(([, c1], [, c2]) => c2 - c1);
+
+    freqAnalTable.innerHTML = "";
+    for (const [idx, [char, count]] of charCounts.entries()) {
+        console.log(char);
+        const row = document.createElement("tr");
+        const cipherCharCell = document.createElement("td");
+        cipherCharCell.textContent = char;
+        const cipherFreqCell = document.createElement("td");
+        cipherFreqCell.textContent = ((100 * count) / sum).toFixed(2) + "%";
+        const suggClearCharCell = document.createElement("td");
+        suggClearCharCell.textContent = ""; // TODO
+        const suggClearFreqCell = document.createElement("td");
+        suggClearFreqCell.textContent = ""; // TODO
+        const acceptCell = document.createElement("td");
+        const acceptButton = document.createElement("button");
+        acceptButton.textContent = "\u2713";
+        acceptCell.appendChild(acceptButton);
+        row.append(
+            cipherCharCell,
+            cipherFreqCell,
+            suggClearCharCell,
+            suggClearFreqCell,
+            acceptCell
+        );
+        freqAnalTable.appendChild(row);
+    }
 }
 
 init();
