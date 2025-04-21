@@ -129,9 +129,13 @@ function updateTranslations() {
 function cipherToClear(cipher) {
     let clear = "";
     for (const char of cipher) {
-        clear += letters.includes(char)
-            ? substitutions[letters.indexOf(char)]
-            : char;
+        const upChar = char.toUpperCase();
+        if (letters.includes(upChar)) {
+            const sub = substitutions[letters.indexOf(upChar)];
+            clear += char === upChar ? sub : sub.toLowerCase();
+        } else {
+            clear += char;
+        }
     }
     return clear;
 }
