@@ -25,9 +25,7 @@ function createCiphertextInput() {
             createCiphertextInput();
         }
     };
-    textareaInput.oninput = () => {
-        textareaOutput.innerText = cipherToClear(textareaInput.value);
-    };
+    textareaInput.oninput = update;
     textareaInput.onblur = () => {
         if (
             !textareaInput.value &&
@@ -48,16 +46,6 @@ function createCiphertextInput() {
     outputCell.appendChild(textareaOutput);
     sampleRow.append(inputCell, outputCell);
     ciphertextContainer.appendChild(sampleRow);
-}
-
-function cipherToClear(cipher) {
-    let clear = "";
-    for (const char of cipher) {
-        clear += letters.includes(char)
-            ? substitutions[letters.indexOf(char)]
-            : char;
-    }
-    return clear;
 }
 
 function createLetterContainer() {
@@ -107,6 +95,7 @@ function createLetterBox(index) {
 
 function update() {
     updateLetterContainer();
+    updateTranslations();
 }
 
 function updateLetterContainer() {
@@ -126,6 +115,25 @@ function updateLetterContainer() {
             }
         }
     }
+}
+
+function updateTranslations() {
+    const ciphertextTable = document.getElementById("ciphertextTable");
+    for (const row of ciphertextTable.rows) {
+        row.cells[1].lastChild.value = cipherToClear(
+            row.cells[0].lastChild.value
+        );
+    }
+}
+
+function cipherToClear(cipher) {
+    let clear = "";
+    for (const char of cipher) {
+        clear += letters.includes(char)
+            ? substitutions[letters.indexOf(char)]
+            : char;
+    }
+    return clear;
 }
 
 init();
