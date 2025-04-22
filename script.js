@@ -14,6 +14,7 @@ const letterInputs = Array(letters.length);
 function init() {
     createCiphertextInput();
     createLetterContainer();
+    registerCheckboxListeners();
     update();
 }
 
@@ -101,6 +102,11 @@ function createLetterBox(index) {
     return letterBox;
 }
 
+function registerCheckboxListeners() {
+    document.getElementById("suggUsedCipherCbx").onchange = update;
+    document.getElementById("suggUsedClearCbx").onchange = update;
+}
+
 function update() {
     updateLetterContainer();
     updateTranslations();
@@ -170,15 +176,32 @@ function updateFrequencyAnalysis() {
         return;
     }
 
-    const charCounts = counts
+    let charCounts = counts
         .map((c, i) => [letters[i], c])
         .filter(([, count]) => count !== 0)
         .sort(([, c1], [, c2]) => c2 - c1);
 
+    if (!document.getElementById("suggUsedCipherCbx").checked) {
+        charCounts = charCounts.filter(
+            ([char]) => substitutions[letters.indexOf(char)] === "?"
+        );
+    }
+
+    var relevantCharFrequencies = charFrequencies;
+    if (!document.getElementById("suggUsedClearCbx").checked) {
+        relevantCharFrequencies = charFrequencies.filter(
+            ([char]) => !substitutions.includes(char)
+        );
+    }
+
     freqAnalTable.innerHTML = "";
-    for (const idx in charCounts) {
-        [cipherChar, cipherCount] = charCounts[idx];
-        [suggClearChar, suggClearFreq] = charFrequencies[idx];
+    const numAvailableSuggestions =
+        charCounts.length < relevantCharFrequencies.length
+            ? charCounts.length
+            : relevantCharFrequencies.length;
+    for (let i = 0; i < numAvailableSuggestions; i++) {
+        [cipherChar, cipherCount] = charCounts[i];
+        [suggClearChar, suggClearFreq] = relevantCharFrequencies[i];
         if (substitutions[letters.indexOf(cipherChar)] === suggClearChar) {
             continue;
         }
