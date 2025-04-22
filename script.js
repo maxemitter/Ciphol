@@ -8,6 +8,10 @@ const charFrequencies = frequencies
     .map((f, i) => [letters[i], f])
     .sort(([, f1], [, f2]) => f2 - f1);
 const substitutions = Array(letters.length).fill("?");
+const history = {
+    rootNode: { value: substitutions.slice(), children: [] },
+};
+history.current = history.rootNode;
 
 const letterInputs = Array(letters.length);
 
@@ -111,6 +115,8 @@ function update() {
     updateLetterContainer();
     updateTranslations();
     updateFrequencyAnalysis();
+    updateHistory();
+    drawHistory();
 }
 
 function updateLetterContainer() {
@@ -240,6 +246,102 @@ function createAcceptHandler(cipher, clear) {
         substitutions[letters.indexOf(cipher)] = clear;
         update();
     };
+}
+
+function updateHistory() {
+    const contained = treeFind(history.rootNode, substitutions);
+    if (contained) {
+        history.current = contained;
+        return;
+    }
+
+    const newCurrent = {
+        value: substitutions.slice(),
+        children: [],
+    };
+    history.current.children.push(newCurrent);
+    history.current = newCurrent;
+}
+
+function treeFind(node, value) {
+    if (arrayEquals(node.value, value)) {
+        return node;
+    }
+
+    for (var child of node.children) {
+        const found = treeFind(child, value);
+        if (found) {
+            return found;
+        }
+    }
+    return undefined;
+}
+
+function arrayEquals(a1, a2) {
+    if (!a1 || !a2 || a1.length !== a2.length) {
+        return false;
+    }
+
+    for (var i = 0; i < a1.length; i++) {
+        if (a1[i] !== a2[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function drawHistory() {
+    const canvas = document.getElementById("historyCanvas");
+    const canvasContext = canvas.getContext("2d");
+
+    canvasContext.fillStyle = "white";
+    canvasContext.fillRect(0, 0, canvas.height, canvas.width);
+    canvasContext.fillStyle = "black";
+
+    drawTree(
+        canvasContext,
+        history.rootNode,
+        10,
+        canvas.height / 2,
+        canvas.height / 4,
+        -1,
+        -1
+    );
+}
+
+function drawTree(canvasContext, node, x, y, spacing, px, py) {
+    circle(canvasContext, x, y);
+    if (px !== -1 && py !== -1) {
+        line(canvasContext, x, y, px, py);
+    }
+
+    const childCount = node.children.length;
+    const offset = (childCount - 1) / 2;
+
+    for (var i = 0; i < childCount; i++) {
+        drawTree(
+            canvasContext,
+            node.children[i],
+            x + 20,
+            y + spacing * (i - offset),
+            spacing / 2,
+            x,
+            y
+        );
+    }
+}
+
+function circle(canvasContext, x, y) {
+    canvasContext.beginPath();
+    canvasContext.arc(x, y, 5, 0, Math.PI * 2);
+    canvasContext.fill();
+}
+
+function line(canvasContext, x1, y1, x2, y2) {
+    canvasContext.beginPath();
+    canvasContext.moveTo(x1, y1);
+    canvasContext.lineTo(x2, y2);
+    canvasContext.stroke();
 }
 
 init();
