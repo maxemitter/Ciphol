@@ -162,15 +162,11 @@ function updateFrequencyAnalysis() {
     const counts = new Array(letters.length).fill(0);
     for (const row of ciphertextTable.rows) {
         for (const char of row.cells[0].lastChild.value) {
-            const upChar = char.toUpperCase();
-            // TODO Should be able to just update and ignore the out of bounds access? Or maybe even use it?
-            if (letters.includes(upChar)) {
-                counts[letters.indexOf(upChar)]++;
-            }
+            counts[letters.indexOf(char.toUpperCase())]++; // all relevant functions ignore the NaN at -1
         }
     }
 
-    const sum = counts.reduce((prev, cur) => prev + cur); // .reduce() ignores the value for -1
+    const sum = counts.reduce((prev, cur) => prev + cur);
     if (sum === 0) {
         freqAnalTable.innerHTML = "<tr><td colspan=5>No data</td></tr>";
         return;

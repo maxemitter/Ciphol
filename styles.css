@@ -96,3 +96,7 @@ textarea {
 .footer {
     height: 50px;
 }
+
+label {
+    align-self: flex-start;
+}
