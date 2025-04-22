@@ -92,3 +92,7 @@ textarea {
 .textareaOutput {
     resize: none;
 }
+
+.footer {
+    height: 50px;
+}
