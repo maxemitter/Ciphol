@@ -4,6 +4,9 @@ const frequencies = [
     0.04, 0.024, 0.067, 0.075, 0.019, 0.00095, 0.06, 0.063, 0.091, 0.028,
     0.0098, 0.024, 0.0015, 0.02, 0.00074,
 ]; // Taken from https://en.wikipedia.org/wiki/Letter_frequency
+const charFrequencies = frequencies
+    .map((f, i) => [letters[i], f])
+    .sort(([, f1], [, f2]) => f2 - f1);
 const substitutions = Array(letters.length).fill("?");
 
 const letterInputs = Array(letters.length);
@@ -168,25 +171,30 @@ function updateFrequencyAnalysis() {
     }
 
     const charCounts = counts
-        .filter((c) => c !== 0)
         .map((c, i) => [letters[i], c])
+        .filter(([, count]) => count !== 0)
         .sort(([, c1], [, c2]) => c2 - c1);
 
     freqAnalTable.innerHTML = "";
-    for (const [idx, [char, count]] of charCounts.entries()) {
-        console.log(char);
+    for (const idx in charCounts) {
+        [cipherChar, cipherCount] = charCounts[idx];
+        [suggClearChar, suggClearFreq] = charFrequencies[idx];
+        if (substitutions[letters.indexOf(cipherChar)] === suggClearChar) {
+            continue;
+        }
         const row = document.createElement("tr");
         const cipherCharCell = document.createElement("td");
-        cipherCharCell.textContent = char;
+        cipherCharCell.textContent = cipherChar;
         const cipherFreqCell = document.createElement("td");
-        cipherFreqCell.textContent = ((100 * count) / sum).toFixed(2) + "%";
+        cipherFreqCell.textContent = formatFractionAsPercent(cipherCount / sum);
         const suggClearCharCell = document.createElement("td");
-        suggClearCharCell.textContent = ""; // TODO
+        suggClearCharCell.textContent = suggClearChar;
         const suggClearFreqCell = document.createElement("td");
-        suggClearFreqCell.textContent = ""; // TODO
+        suggClearFreqCell.textContent = formatFractionAsPercent(suggClearFreq);
         const acceptCell = document.createElement("td");
         const acceptButton = document.createElement("button");
         acceptButton.textContent = "\u2713";
+        acceptButton.onclick = createAcceptHandler(cipherChar, suggClearChar);
         acceptCell.appendChild(acceptButton);
         row.append(
             cipherCharCell,
@@ -197,6 +205,22 @@ function updateFrequencyAnalysis() {
         );
         freqAnalTable.appendChild(row);
     }
+
+    if (freqAnalTable.innerHTML === "") {
+        freqAnalTable.innerHTML =
+            "<tr><td colspan=5>No suggestions available</td></tr>";
+    }
+}
+
+function formatFractionAsPercent(num) {
+    return (100 * num).toFixed(2) + "%";
+}
+
+function createAcceptHandler(cipher, clear) {
+    return () => {
+        substitutions[letters.indexOf(cipher)] = clear;
+        update();
+    };
 }
 
 init();
