@@ -301,30 +301,31 @@ function drawHistory() {
     drawTree(
         canvasContext,
         history.rootNode,
-        10,
+        20,
         canvas.height / 2,
-        canvas.height / 4,
+        canvas.height - 20,
         -1,
         -1
     );
 }
 
-function drawTree(canvasContext, node, x, y, spacing, px, py) {
+function drawTree(canvasContext, node, x, y, space, px, py) {
     circle(canvasContext, x, y);
     if (px !== -1 && py !== -1) {
         line(canvasContext, x, y, px, py);
     }
 
     const childCount = node.children.length;
-    const offset = (childCount - 1) / 2;
+    const segmentSize = space / childCount;
+    const startY = y - space / 2 + segmentSize / 2;
 
     for (var i = 0; i < childCount; i++) {
         drawTree(
             canvasContext,
             node.children[i],
-            x + 20,
-            y + spacing * (i - offset),
-            spacing / 2,
+            x + 30,
+            startY + segmentSize * i,
+            space / childCount,
             x,
             y
         );
