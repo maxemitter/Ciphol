@@ -64,7 +64,7 @@ function createCiphertextInput() {
 function createLetterContainer() {
     const letterContainer = document.getElementById("letterContainer");
 
-    for (var i = 0; i < letters.length; i++) {
+    for (let i = 0; i < letters.length; i++) {
         letterContainer.appendChild(createLetterBox(i));
     }
 }
@@ -120,13 +120,13 @@ function update() {
 }
 
 function updateLetterContainer() {
-    for (var i = 0; i < letters.length; i++) {
+    for (let i = 0; i < letters.length; i++) {
         letterInputs[i].value = substitutions[i];
         letterInputs[i].classList.remove("invalid");
     }
 
-    for (var i = 0; i < letters.length; i++) {
-        for (var j = i + 1; j < letters.length; j++) {
+    for (let i = 0; i < letters.length; i++) {
+        for (let j = i + 1; j < letters.length; j++) {
             if (
                 substitutions[i] === substitutions[j] &&
                 substitutions[i] !== "?"
@@ -189,7 +189,7 @@ function updateFrequencyAnalysis() {
         );
     }
 
-    var relevantCharFrequencies = charFrequencies;
+    let relevantCharFrequencies = charFrequencies;
     if (!document.getElementById("suggUsedClearCbx").checked) {
         relevantCharFrequencies = charFrequencies.filter(
             ([char]) => !substitutions.includes(char)
@@ -268,7 +268,7 @@ function treeFind(node, value) {
         return node;
     }
 
-    for (var child of node.children) {
+    for (let child of node.children) {
         const found = treeFind(child, value);
         if (found) {
             return found;
@@ -282,7 +282,7 @@ function arrayEquals(a1, a2) {
         return false;
     }
 
-    for (var i = 0; i < a1.length; i++) {
+    for (let i = 0; i < a1.length; i++) {
         if (a1[i] !== a2[i]) {
             return false;
         }
@@ -319,7 +319,7 @@ function drawTree(canvasContext, node, x, y, space, px, py) {
     const segmentSize = space / childCount;
     const startY = y - space / 2 + segmentSize / 2;
 
-    for (var i = 0; i < childCount; i++) {
+    for (let i = 0; i < childCount; i++) {
         drawTree(
             canvasContext,
             node.children[i],
