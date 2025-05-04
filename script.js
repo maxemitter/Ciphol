@@ -298,15 +298,29 @@ function drawHistory() {
     canvasContext.fillRect(0, 0, canvas.height, canvas.width);
     canvasContext.fillStyle = "black";
 
+    const height = 2 * 10 * requiredTreeWidth(history.rootNode);
+
     drawTree(
         canvasContext,
         history.rootNode,
         20,
         canvas.height / 2,
-        canvas.height - 20,
+        Math.max(height, canvas.height - 20),
         -1,
         -1
     );
+}
+
+function requiredTreeWidth(node) {
+    if (node.children.length === 0) {
+        return 1;
+    }
+
+    let max = 0;
+    for (let child of node.children) {
+        max = Math.max(max, requiredTreeWidth(child));
+    }
+    return max * node.children.length;
 }
 
 function drawTree(canvasContext, node, x, y, space, px, py) {
