@@ -7,7 +7,7 @@ const frequencies = [
 const charFrequencies = frequencies
     .map((f, i) => [letters[i], f])
     .sort(([, f1], [, f2]) => f2 - f1);
-const substitutions = Array(letters.length).fill("?");
+let substitutions = Array(letters.length).fill("?");
 const history = {
     rootNode: { value: substitutions.slice(), children: [] },
 };
@@ -110,6 +110,38 @@ function registerListeners() {
     window.addEventListener("resize", update);
     document.getElementById("suggUsedCipherCbx").onchange = update;
     document.getElementById("suggUsedClearCbx").onchange = update;
+    const canvas = document.getElementById("historyCanvas");
+    canvas.addEventListener("mousemove", function (e) {
+        var rect = canvas.getBoundingClientRect();
+        mouseX = e.clientX - rect.left;
+        mouseY = e.clientY - rect.top;
+
+        handleMouse(
+            history.rootNode,
+            20,
+            canvas.height / 2,
+            canvas.height - 20,
+            mouseX,
+            mouseY,
+            false
+        );
+    });
+
+    canvas.addEventListener("click", function (e) {
+        var rect = canvas.getBoundingClientRect();
+        mouseX = e.clientX - rect.left;
+        mouseY = e.clientY - rect.top;
+
+        handleMouse(
+            history.rootNode,
+            20,
+            canvas.height / 2,
+            canvas.height - 20,
+            mouseX,
+            mouseY,
+            true
+        );
+    });
 }
 
 function update() {
@@ -342,7 +374,6 @@ function treeHeight(node) {
 }
 
 function drawTree(canvasContext, node, x, y, space, px, py) {
-    circle(canvasContext, x, y);
     if (px !== -1 && py !== -1) {
         line(canvasContext, x, y, px, py);
     }
@@ -362,11 +393,49 @@ function drawTree(canvasContext, node, x, y, space, px, py) {
             y
         );
     }
+
+    const color = arrayEquals(node.value, substitutions)
+        ? "#ff0000"
+        : "#000000";
+    circle(canvasContext, x, y, color);
 }
 
-function circle(canvasContext, x, y) {
+function handleMouse(node, x, y, space, mouseX, mouseY, isClick) {
+    if (Math.abs(mouseX - x) <= 10 && Math.abs(mouseY - y) <= 10) {
+        if (isClick) {
+            substitutions = node.value.slice();
+            update();
+        } else {
+            drawHoverText(x, y, node.value);
+        }
+        return;
+    }
+
+    const childCount = node.children.length;
+    const segmentSize = space / childCount;
+    const startY = y - space / 2 + segmentSize / 2;
+
+    for (let i = 0; i < childCount; i++) {
+        handleMouse(
+            node.children[i],
+            x + 30,
+            startY + segmentSize * i,
+            space / childCount,
+            mouseX,
+            mouseY,
+            isClick
+        );
+    }
+}
+
+function drawHoverText(x, y, subst) {
+    console.log("Hovering over " + subst);
+}
+
+function circle(canvasContext, x, y, color) {
     canvasContext.beginPath();
     canvasContext.arc(x, y, 5, 0, Math.PI * 2);
+    canvasContext.fillStyle = color;
     canvasContext.fill();
 }
 
