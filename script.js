@@ -18,7 +18,7 @@ const letterInputs = Array(letters.length);
 function init() {
     createCiphertextInput();
     createLetterContainer();
-    registerCheckboxListeners();
+    registerListeners();
     update();
 }
 
@@ -106,7 +106,8 @@ function createLetterBox(index) {
     return letterBox;
 }
 
-function registerCheckboxListeners() {
+function registerListeners() {
+    window.addEventListener("resize", update);
     document.getElementById("suggUsedCipherCbx").onchange = update;
     document.getElementById("suggUsedClearCbx").onchange = update;
 }
@@ -291,21 +292,26 @@ function arrayEquals(a1, a2) {
 }
 
 function drawHistory() {
+    const minCanvasHeight = 200;
     const canvas = document.getElementById("historyCanvas");
     const canvasContext = canvas.getContext("2d");
+
+    const requiredHeight = 2 * 10 * requiredTreeWidth(history.rootNode);
+    canvas.height = Math.max(requiredHeight, minCanvasHeight);
+    const requiredWidth = 20 + 30 * treeHeight(history.rootNode);
+    // Subtract 2 from the body width to account for canvas border
+    canvas.width = Math.max(requiredWidth, document.body.clientWidth - 2);
 
     canvasContext.fillStyle = "white";
     canvasContext.fillRect(0, 0, canvas.height, canvas.width);
     canvasContext.fillStyle = "black";
-
-    const height = 2 * 10 * requiredTreeWidth(history.rootNode);
 
     drawTree(
         canvasContext,
         history.rootNode,
         20,
         canvas.height / 2,
-        Math.max(height, canvas.height - 20),
+        canvas.height - 20,
         -1,
         -1
     );
@@ -321,6 +327,18 @@ function requiredTreeWidth(node) {
         max = Math.max(max, requiredTreeWidth(child));
     }
     return max * node.children.length;
+}
+
+function treeHeight(node) {
+    if (node.children.length === 0) {
+        return 1;
+    }
+
+    let max = 0;
+    for (let child of node.children) {
+        max = Math.max(max, treeHeight(child));
+    }
+    return max + 1;
 }
 
 function drawTree(canvasContext, node, x, y, space, px, py) {
