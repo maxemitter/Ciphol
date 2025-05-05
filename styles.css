@@ -104,8 +104,18 @@ label {
 .widthLimiter {
     width: 100%;
     overflow-x: auto;
+    position: absolute;
+}
+
+.absolute {
+    position: absolute;
 }
 
 canvas {
     border: 1px solid black;
+}
+
+#hoverContainer {
+    position: relative;
+    width: 100%;
 }

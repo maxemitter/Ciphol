@@ -12,12 +12,14 @@ const history = {
     rootNode: { value: substitutions.slice(), children: [] },
 };
 history.current = history.rootNode;
+let hoverElement;
 
 const letterInputs = Array(letters.length);
 
 function init() {
     createCiphertextInput();
     createLetterContainer();
+    createHoverElement();
     registerListeners();
     update();
 }
@@ -106,6 +108,12 @@ function createLetterBox(index) {
     return letterBox;
 }
 
+function createHoverElement() {
+    hoverElement = document.createElement("div");
+    hoverElement.className = "absolute";
+    document.getElementById("hoverContainer").appendChild(hoverElement);
+}
+
 function registerListeners() {
     window.addEventListener("resize", update);
     document.getElementById("suggUsedCipherCbx").onchange = update;
@@ -116,7 +124,7 @@ function registerListeners() {
         mouseX = e.clientX - rect.left;
         mouseY = e.clientY - rect.top;
 
-        handleMouse(
+        const handled = handleMouse(
             history.rootNode,
             20,
             canvas.height / 2,
@@ -125,6 +133,9 @@ function registerListeners() {
             mouseY,
             false
         );
+        if (!handled) {
+            hoverElement.hidden = true;
+        }
     });
 
     canvas.addEventListener("click", function (e) {
@@ -408,7 +419,7 @@ function handleMouse(node, x, y, space, mouseX, mouseY, isClick) {
         } else {
             drawHoverText(x, y, node.value);
         }
-        return;
+        return true;
     }
 
     const childCount = node.children.length;
@@ -416,7 +427,7 @@ function handleMouse(node, x, y, space, mouseX, mouseY, isClick) {
     const startY = y - space / 2 + segmentSize / 2;
 
     for (let i = 0; i < childCount; i++) {
-        handleMouse(
+        const handled = handleMouse(
             node.children[i],
             x + 30,
             startY + segmentSize * i,
@@ -425,11 +436,18 @@ function handleMouse(node, x, y, space, mouseX, mouseY, isClick) {
             mouseY,
             isClick
         );
+        if (handled) {
+            return true;
+        }
     }
+    return false;
 }
 
 function drawHoverText(x, y, subst) {
-    console.log("Hovering over " + subst);
+    hoverElement.innerText = subst;
+    hoverElement.style.left = x + "px";
+    hoverElement.style.top = y - 25 + "px";
+    hoverElement.hidden = false;
 }
 
 function circle(canvasContext, x, y, color) {
